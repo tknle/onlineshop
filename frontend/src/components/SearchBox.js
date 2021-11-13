@@ -29,10 +29,9 @@ function SearchBox() {
                 type='submit'
                 variant='outline-dark'
                 className='p-2'
-                value='Search'
             >
                 Search
-            </Button> 
+            </Button>
         </Form>
     )
 }
