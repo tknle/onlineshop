@@ -30,7 +30,7 @@ function SearchBox() {
                 variant='outline-dark'
                 className='p-2'
             >
-                Submit
+                Search
             </Button>
         </Form>
     )
