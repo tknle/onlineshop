@@ -130,7 +130,7 @@ DATABASES = {
         'USER': 'itsmia',
         'PASSWORD': os.environ.get('DB_PASS'),   
         'HOST' :'onlineshop-identifier.colhk3oo4i8l.us-east-2.rds.amazonaws.com',
-        'PORT' : 8000
+        'PORT' : 5432
     }
 }
 
