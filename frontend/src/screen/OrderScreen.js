@@ -201,8 +201,8 @@ function OrderScreen({ match, history }) {
                                 </ListGroup>
                                 {loadingDeliver && <Loader />}
                                 {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-                                    <ListGroup.Item className="d-grid gap-2">
-                                        <Button            
+                                    <ListGroup.Item>
+                                        <Button
                                             type='button'
                                             className='btn btn-block'
                                             onClick={deliverHandler}

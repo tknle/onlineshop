@@ -129,8 +129,10 @@ DATABASES = {
         'NAME': 'onlineshop',
         'USER': 'itsmia',
         'PASSWORD': os.environ.get('DB_PASS'),   
+       
         'HOST' :'onlineshop-identifier.colhk3oo4i8l.us-east-2.rds.amazonaws.com',
         'PORT' : 5432
+        
     }
 }
 
@@ -196,8 +198,11 @@ AWS_QUERYSTRING_AUTH = False
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+
+AWS_ACCESS_KEY_ID = 'AKIAURXEEEFB5DBZQRXP'
+AWS_SECRET_ACCESS_KEY = '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'
 
 AWS_STORAGE_BUCKET_NAME = 'onlineshop-bucket-demo'
 

@@ -7,10 +7,9 @@ from rest_framework.response import Response
 from base.models import Product, Order, OrderItem, ShippingAddress
 from base.serializer import ProductSerializer, OrderSerializer
 
-from rest_framework import serializers, status
+from rest_framework import status
 from datetime import datetime
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -21,28 +20,30 @@ def addOrderItems(request):
     orderItems = data['orderItems']
 
     if orderItems and len(orderItems) == 0:
-        return Response({'detail':'No order item'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
     else:
-        #(1) Create order
+
+        # (1) Create order
+
         order = Order.objects.create(
-            user = user,
-            paymentMethod = data['paymentMethod'],
+            user=user,
+            paymentMethod=data['paymentMethod'],
             taxPrice=data['taxPrice'],
             shippingPrice=data['shippingPrice'],
             totalPrice=data['totalPrice']
         )
 
-        #(2) Create shipping address
+        # (2) Create shipping address
 
         shipping = ShippingAddress.objects.create(
-            order = order,
-            address = data['shippingAddress']['address'],
-            city = data['shippingAddress']['city'],
-            postalCode = data['shippingAddress']['postalCode'],
-            country = data['shippingAddress']['country'],
+            order=order,
+            address=data['shippingAddress']['address'],
+            city=data['shippingAddress']['city'],
+            postalCode=data['shippingAddress']['postalCode'],
+            country=data['shippingAddress']['country'],
         )
 
-        #(3) Create order items and set order to orderItem relationship
+        # (3) Create order items adn set order to orderItem relationship
         for i in orderItems:
             product = Product.objects.get(_id=i['product'])
 
@@ -53,21 +54,22 @@ def addOrderItems(request):
                 qty=i['qty'],
                 price=i['price'],
                 image=product.image.url,
-
             )
 
-            #(4) Update stock
+            # (4) Update stock
+
             product.numInStock -= item.qty
             product.save()
 
-    serializer = OrderSerializer(order, many=False)
-    return Response(serializer.data)
+        serializer = OrderSerializer(order, many=False)
+        return Response(serializer.data)
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getMyOrders(request):
-    user=request.user
-    orders=user.order_set.all()
+    user = request.user
+    orders = user.order_set.all()
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
@@ -75,28 +77,9 @@ def getMyOrders(request):
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def getOrders(request):
-    orders=Order.objects.all()
+    orders = Order.objects.all()
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
-
-    # # page = Order.objects.filter(name__icontains=orders)
-    # page = request.GET.get('page')
-    # paginator = Paginator(page, 10)
-    
-    # try:
-    #     orders = paginator.page(page)
-    # except PageNotAnInteger:
-    #     orders = paginator.page(1)
-    # except EmptyPage:
-    #     orders = paginator.page(paginator.num_pages)
-
-    # if page == None:
-    #     page = 1
-
-    # page = int(page)
-
-    # serializer = OrderSerializer(orders, many=True)
-    # return Response({'orders':serializer.data, 'page':page, 'pages':paginator.num_pages})
 
 
 @api_view(['GET'])
@@ -111,9 +94,11 @@ def getOrderById(request, pk):
             serializer = OrderSerializer(order, many=False)
             return Response(serializer.data)
         else:
-            Response({'detail' : 'Not authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
+            Response({'detail': 'Not authorized to view this order'},
+                     status=status.HTTP_400_BAD_REQUEST)
     except:
-        return Response({'detail':'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -123,7 +108,9 @@ def updateOrderToPaid(request, pk):
     order.isPaid = True
     order.paidAt = datetime.now()
     order.save()
+
     return Response('Order was paid')
+
 
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
@@ -133,4 +120,5 @@ def updateOrderToDelivered(request, pk):
     order.isDelivered = True
     order.deliveredAt = datetime.now()
     order.save()
+
     return Response('Order was delivered')

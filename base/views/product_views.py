@@ -1,6 +1,3 @@
-
-# functools import _Descriptor
-from django.core import paginator
 from django.shortcuts import render
 
 from rest_framework.decorators import api_view, permission_classes
@@ -9,22 +6,23 @@ from rest_framework.response import Response
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from base.models import Product, Review
-from base.products import products
 from base.serializer import ProductSerializer
 
 from rest_framework import status
+
 #response only works with decorator
 @api_view(['GET'])
 def getProducts(request):
     query = request.query_params.get('keyword')
-    print('query:', query)
     if query == None:
         query = ''
-    products = Product.objects.filter(name__icontains=query)
-    
+
+    products = Product.objects.filter(
+        name__icontains=query).order_by('-createdAt')
+
     page = request.query_params.get('page')
-    paginator = Paginator(products, 12)
-    
+    paginator = Paginator(products, 5)
+
     try:
         products = paginator.page(page)
     except PageNotAnInteger:
@@ -36,9 +34,9 @@ def getProducts(request):
         page = 1
 
     page = int(page)
-
-    serializer = ProductSerializer(products,many=True)
-    return Response({'products': serializer.data, 'page':page, 'pages': paginator.num_pages})
+    print('Page:', page)
+    serializer = ProductSerializer(products, many=True)
+    return Response({'products': serializer.data, 'page': page, 'pages': paginator.num_pages})
 
 
 @api_view(['GET'])

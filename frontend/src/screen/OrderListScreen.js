@@ -17,17 +17,18 @@ function OrderListScreen({ history }) {
     const { userInfo } = userLogin
 
 
-
+    
     useEffect(() => {
         if (userInfo && userInfo.isAdmin) {
-            dispatch(listOrders())
+            dispatch(listOrders());
+            
         } else {
             history.push('/login')
         }
 
-    }, [dispatch, history, userInfo])
+    }, [dispatch, history, userInfo, orders])
 
-
+ 
     return (
         <div>
             <h1>Orders</h1>
@@ -60,14 +61,14 @@ function OrderListScreen({ history }) {
                                         <td>{order.isPaid ? (
                                             order.paidAt.substring(0, 10)
                                         ) : (
-                                                <i className='fas fa-times' style={{ color: 'red' }}></i>
+                                                <i className='fas fa-check' style={{ color: 'red' }}></i>
                                             )}
                                         </td>
 
                                         <td>{order.isDelivered ? (
                                             order.deliveredAt.substring(0, 10)
                                         ) : (
-                                                <i className='fas fa-times' style={{ color: 'red' }}></i>
+                                                <i className='fas fa-check' style={{ color: 'red' }}></i>
                                             )}
                                         </td>
 
